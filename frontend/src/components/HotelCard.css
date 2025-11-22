@@ -1,0 +1,67 @@
+/* --- Hotel Card Styles --- */
+
+.hotel-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  margin-top: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.hotel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.hotel-icon {
+  font-size: 1.25rem;
+}
+
+.hotel-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0; /* ลบ margin เริ่มต้นของ h4 */
+}
+
+.hotel-card-body {
+  padding: 0.5rem 0; /* เว้นช่องไฟเล็กน้อย */
+}
+
+.hotel-offer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  /* เส้นคั่นระหว่าง offer */
+  border-bottom: 1px solid #f3f4f6; 
+}
+
+/* ไม่ต้องแสดงเส้นคั่นที่ offer สุดท้าย */
+.hotel-offer:last-child {
+  border-bottom: none;
+}
+
+.hotel-room-type {
+  color: #374151;
+  text-transform: capitalize; /* ทำให้ 'STANDARD' เป็น 'Standard' */
+}
+
+.hotel-price {
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.hotel-offer-none {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* ------------------------- */

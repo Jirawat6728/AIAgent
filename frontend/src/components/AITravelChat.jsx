@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AITravelChat.css';
+import FlightCard from './FlightCard'; // <-- เพิ่ม
+import HotelCard from './HotelCard';   // <-- เพิ่ม
+import CarCard from './CarCard';       // <-- เพิ่ม
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -86,7 +89,7 @@ export default function AITravelChat({ user, onLogout }) {
         id: Date.now() + 1,
         type: 'bot',
         text: data.response,
-        searchResults: data.search_results
+        searchResults: data.search_results // <-- โครงสร้างใหม่ { flights: ..., hotels: ..., cars: ... }
       };
       
       setMessages(prev => [...prev, botMessage]);
@@ -215,23 +218,87 @@ export default function AITravelChat({ user, onLogout }) {
                 <div className="connection-status">
                   <div className={`status-dot ${isConnected ? 'status-connected' : 'status-disconnected'}`}></div>
                   <span className="status-text">
-                    {isConnected ? 'Connected to FastAPI + Gemini + Amadeus' : 'Disconnected'}
+                    {isConnected ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Messages Area */}
+          {/* Messages Area (นี่คือโครงสร้างที่ถูกต้อง) */}
           <div className="messages-area">
             <div className="messages-list">
+              
+              {/* --- (นี่คือตรรกะการ Render แบบ Multi-step ใหม่) --- */}
               {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`message-wrapper ${message.type === 'user' ? 'message-right' : 'message-left'}`}
                 >
                   <div className={`message-bubble ${message.type === 'user' ? 'message-user' : 'message-bot'}`}>
+                    
+                    {/* 1. แสดงข้อความแชท (เหมือนเดิม) */}
                     <p className="message-text">{message.text}</p>
+                    
+                    {/* 2. แสดง FlightCard (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.flights && message.searchResults.flights.data && (
+                      <div className="search-results-container">
+                        {message.searchResults.flights.data.map((flight, index) => (
+                          <FlightCard key={`flight-${index}`} flight={flight} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 3. แสดง HotelCard (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.hotels && message.searchResults.hotels.data && (
+                      <div className="search-results-container">
+                        {message.searchResults.hotels.data.map((hotel, index) => (
+                          <HotelCard key={`hotel-${index}`} hotel={hotel} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 4. แสดง CarCard (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.cars && message.searchResults.cars.data && (
+                      <div className="search-results-container">
+                        {message.searchResults.cars.data.map((car, index) => (
+                          <CarCard key={`car-${index}`} car={car} />
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* --- (V2 UI ใหม่: แสดงผลแบบง่ายๆ) --- */}
+
+                    {/* 5. แสดง Local Transport (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.transport && message.searchResults.transport.data && (
+                      <div className="search-results-container">
+                        <pre className="tool-result-json">
+                          <strong>🗺️ การเดินทาง:</strong><br />
+                          {JSON.stringify(message.searchResults.transport.data, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    
+                    {/* 6. แสดง Nearby Places (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.places && message.searchResults.places.data && (
+                      <div className="search-results-container">
+                        <pre className="tool-result-json">
+                          <strong>📍 สถานที่ใกล้เคียง:</strong><br />
+                          {JSON.stringify(message.searchResults.places.data, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    
+                    {/* 7. แสดง Booking (ถ้ามี) */}
+                    {message.searchResults && message.searchResults.booking && (
+                      <div className="search-results-container">
+                        <pre className="tool-result-json">
+                          <strong>💳 การจอง (Sandbox):</strong><br />
+                          {JSON.stringify(message.searchResults.booking, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+
                   </div>
                 </div>
               ))}
@@ -251,7 +318,7 @@ export default function AITravelChat({ user, onLogout }) {
             </div>
           </div>
 
-          {/* Input Area */}
+          {/* Input Area (ต้องอยู่ภายใน chat-box) */}
           <div className="input-area">
             <div className="input-wrapper">
               <textarea
@@ -289,8 +356,8 @@ export default function AITravelChat({ user, onLogout }) {
               Powered by Google Gemini AI + Amadeus API
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </div> {/* <-- ปิด chat-box */}
+      </main> {/* <-- ปิด main */}
+    </div> 
   );
 }
